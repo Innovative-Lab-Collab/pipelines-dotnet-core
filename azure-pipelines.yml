@@ -1,0 +1,31 @@
+trigger:
+- azure-pipelines
+
+pool:
+  vmImage: 'vs2017-win2016'
+
+variables:
+  buildConfiguration: 'Release'
+
+steps:
+- task: PowerShell@2
+  inputs:
+    targetType: 'inline'
+    script: |
+      if (-not (Test-Path -Path $(Build.SourceDirectory)\saikrishna)) 
+       {    
+        try 
+         {
+           New-Item -Path $(Build.SourceDirectory)\saikrishna -ItemType Directory -ErrorAction Stop | Out-Null #-Force
+         }
+        catch 
+         {
+           Write-Error -Message "Unable to create directory '$(Build.SourceDirectory)\saikrishna'. Error was: $_" -ErrorAction Stop
+         }
+       "Successfully created directory '$(Build.SourceDirectory)\saikrishna'."
+       }
+      else 
+       {
+                "Directory already existed"
+       }
+  displayName: 'dotnet build $(buildConfiguration)'
